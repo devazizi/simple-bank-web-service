@@ -13,15 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('credit_cards', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-//            $table->string('email')->unique();
-//            $table->timestamp('email_verified_at')->nullable();
-            $table->string('phone_number');
-            $table->string('password');
-            $table->rememberToken();
+            $table->unsignedInteger('account_id');
+            $table->unsignedInteger('credit_card_number');
             $table->timestamps();
+
+            $table->foreign('account_id')->references('id')->on('accounts');
+            $table->index(['account_id', 'credit_card_number']);
         });
     }
 
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('credit_cards');
     }
 };
