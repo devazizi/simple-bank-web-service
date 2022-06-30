@@ -6,16 +6,12 @@ use App\Constants\HttpStatusConstants;
 use App\Constants\TransactionConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CardTransactionRequest;
-use App\Infrastructure\Interfaces\Repositories\AccountManagementRepositoryInterface;
-use App\Infrastructure\Interfaces\Repositories\TransactionRepositoryInterface;
 use App\Jobs\SendCardTransactionJob;
-use App\Repository\AccountManagementRepository;
-use App\Repository\TransactionRepository;
+use App\Service\CardTransactionService;
 use App\Service\Responser;
 use App\Service\SmsPattern\CardTransactionSMSPattern;
 use App\Service\TransactionValidators\CreditCards\CreditCardBelongUserValidation;
 use App\Service\TransactionValidators\CreditCards\HasEnoughBalanceForTransactionValidation;
-use Illuminate\Support\Facades\DB;
 
 class CreateTransaction extends Controller
 {
@@ -29,41 +25,13 @@ class CreateTransaction extends Controller
         );
         $validator->validate();
 
-        /* @var $accountManagementRepo AccountManagementRepository */
-        $accountManagementRepo = app(AccountManagementRepositoryInterface::class);
-        /* @var $transactionRepo TransactionRepository*/
-        $transactionRepo = app(TransactionRepositoryInterface::class);
+        CardTransactionService::createTransaction($requestData);
 
-        DB::transaction(function () use ($requestData, $accountManagementRepo, $transactionRepo) {
-
-            $accountManagementRepo->decreaseBalance(
-                $requestData['from'],
-                $requestData['amount'] + TransactionConstants::TRANSACTION_FEE
-            );
-
-            $senderTransaction = $transactionRepo->storeTransactionLog(
-                $requestData['from'],
-                $requestData['to'],
-                $requestData['amount'] + TransactionConstants::TRANSACTION_FEE
-            );
-
-            $transactionRepo->storeTransactionFee(
-                $senderTransaction->id,
-                TransactionConstants::TRANSACTION_FEE
-            );
-
-            $accountManagementRepo->increaseBalance(
-                $requestData['to'],
-                $requestData['amount']
-            );
-
-        });
-
-        $this->dispatch(new SendCardTransactionJob(1, CardTransactionSMSPattern::sender([
+        $this->dispatch(new SendCardTransactionJob($requestData['from'], CardTransactionSMSPattern::sender([
             'cardNumber' => $requestData['from'],
-            'amount' => $requestData['amount']
+            'amount' => $requestData['amount'] + TransactionConstants::TRANSACTION_FEE
         ])));
-        $this->dispatch(new SendCardTransactionJob(1, CardTransactionSMSPattern::receiver([
+        $this->dispatch(new SendCardTransactionJob($requestData['to'], CardTransactionSMSPattern::receiver([
             'cardNumber' => $requestData['to'],
             'amount' => $requestData['amount']
         ])));

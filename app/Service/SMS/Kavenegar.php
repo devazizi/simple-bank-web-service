@@ -10,12 +10,12 @@ class Kavenegar implements SmsServiceInterface
 {
     private function callAPI(string $phoneNumber, string $message)
     {
-        $kApi = new KavenegarApi(env('kavehnegar_api_key'));
-        Log::info($kApi->Send(config('sms.kavenegar_sender'), $phoneNumber, $message));
+        $kApi = new KavenegarApi(env('KAVEHNEGAR_API_KEY'));
+        $kApi->Send(config('sms.kavenegar_sender'), $phoneNumber, $message);
     }
 
     public function sendSms(string $phoneNumber, string $message)
     {
-        // TODO: Implement sendSms() method.
+       $this->callAPI($phoneNumber, $message);
     }
 }

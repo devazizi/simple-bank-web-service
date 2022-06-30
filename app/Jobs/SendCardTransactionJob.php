@@ -20,7 +20,7 @@ class SendCardTransactionJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(private int $clientId, private string $message)
+    public function __construct(private int $cardNumber, private string $message)
     {
     }
 
@@ -36,8 +36,9 @@ class SendCardTransactionJob implements ShouldQueue
 
         $smsProvider = new $smsServiceProviderClass();
 
-        $client = app(UserRepositoryInterface::class)->get($this->clientId);
+        $clientPhoneNumber = app(UserRepositoryInterface::class)
+            ->getUserPhoneNumberByCellNumber($this->cardNumber);
 
-        $smsProvider->sendSms($client->phone_number, $this->message);
+        $smsProvider->sendSms($clientPhoneNumber, $this->message);
     }
 }
