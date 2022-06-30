@@ -15,8 +15,12 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-//            $table->amout
+            $table->string('from');
+            $table->string('to');
+            $table->unsignedBigInteger('amount');
             $table->timestamps();
+
+            $table->index(['from', 'to', 'amount']);
         });
     }
 

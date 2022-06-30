@@ -15,11 +15,11 @@ return new class extends Migration
     {
         Schema::create('credit_cards', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('account_id');
-            $table->unsignedInteger('credit_card_number');
+            $table->bigInteger('account_id');
+            $table->string('credit_card_number');
             $table->timestamps();
 
-            $table->foreign('account_id')->references('id')->on('accounts');
+//            $table->foreign('account_id')->references('id')->on('accounts');
             $table->index(['account_id', 'credit_card_number']);
         });
     }

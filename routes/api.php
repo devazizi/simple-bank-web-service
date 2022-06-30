@@ -13,7 +13,14 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::namespace('Auth')->prefix('auth')->group(function () {
+    Route::post('login');
+});
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware([])->group(function () {
+
+    Route::namespace('Transactions')->group(function () {
+        Route::get('card-transactions/have-must-transaction', 'IndexTransaction@getThreeUserHasMostTransaction');
+        Route::post('/card-transactions', 'CreateTransaction@createTransactionFromCardToCard');
+    });
 });
