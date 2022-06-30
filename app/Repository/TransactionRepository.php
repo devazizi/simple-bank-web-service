@@ -34,7 +34,7 @@ class TransactionRepository implements TransactionRepositoryInterface
                 $query->join('transactions', function ($join) {
                     $join->on('credit_cards.credit_card_number', '=', 'transactions.from')
                         ->orOn('credit_cards.credit_card_number', '=', 'transactions.to');
-                })->where('transactions.created_at', '>=', now()->addMinute(-40));
+                })->where('transactions.created_at', '>=', now()->addMinute(-10))->limit(10);
             }])
             ->whereIn('users.id', $usersId)->get();
     }
@@ -50,7 +50,7 @@ class TransactionRepository implements TransactionRepositoryInterface
                 $join->on('credit_cards.credit_card_number', '=', 'transactions.from')
                     ->orOn('credit_cards.credit_card_number', '=', 'transactions.to');
             })
-            ->where('transactions.created_at', '>=', now()->addMinute(-40))
+            ->where('transactions.created_at', '>=', now()->addMinute(-10))
             ->groupBy('users.id')
             ->orderBy('transactionCount', 'desc')
             ->limit(3)->get()->pluck('userId')->toArray();

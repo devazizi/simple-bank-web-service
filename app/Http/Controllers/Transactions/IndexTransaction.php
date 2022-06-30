@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Transactions;
 
 use App\Constants\HttpStatusConstants;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Infrastructure\Interfaces\Repositories\TransactionRepositoryInterface;
 use App\Repository\TransactionRepository;
 use App\Service\Responser;
@@ -18,7 +19,7 @@ class IndexTransaction extends Controller
         $threeUser = $accountRepo->getThreeUserHaveMostTransaction();
 
         return response()->json(
-            Responser::success($threeUser),
+            Responser::success(UserResource::collection($threeUser)),
             HttpStatusConstants::SUCCESS
         );
     }
