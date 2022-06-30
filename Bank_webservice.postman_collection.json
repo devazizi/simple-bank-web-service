@@ -1,0 +1,91 @@
+{
+	"info": {
+		"_postman_id": "09a12ff7-977a-41be-b0d4-83e510387bec",
+		"name": "Bank_webservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Card Transaction",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "Accept-Language",
+						"value": "fa",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "from\n",
+							"value": "6104337649763124",
+							"type": "default"
+						},
+						{
+							"key": "to",
+							"value": "6104337649726124",
+							"type": "default"
+						},
+						{
+							"key": "amount",
+							"value": "43000",
+							"type": "default"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "default",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/api/card-transactions",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"card-transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Most Transaction User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "localhost:8000/api/card-transactions/have-must-transaction",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"card-transactions",
+						"have-must-transaction"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
